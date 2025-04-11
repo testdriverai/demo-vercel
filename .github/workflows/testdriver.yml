@@ -10,6 +10,8 @@ jobs:
   deploy:
     name: Deploy to Vercel
     runs-on: ubuntu-latest
+    outputs:
+      vercel_url: ${{ steps.vercel-deployment.outputs.preview-url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,10 +24,6 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Save Vercel Deployment URL
-        run: echo "VERCEL_URL=${{ steps.vercel-deployment.outputs.preview-url }}" >> $GITHUB_ENV
-
-
   test:
     name: Run TestDriver.ai Tests
     runs-on: ubuntu-latest
@@ -34,15 +32,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up environment
-        run: echo " VERCEL_URL=${{ env.VERCEL_URL }}"
+      - name: Display Vercel URL 
+        run: echo "VERCEL_URL=${{ needs.deploy.outputs.vercel_url }}"
 
       - name: Run TestDriver.ai
         uses: testdriverai/action@main
         with:
           key: ${{ secrets.TESTDRIVER_API_KEY }}
           prerun: |
-            Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--start-maximized", "${{ env.VERCEL_URL }}"
+            Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--start-maximized", "${{ needs.deploy.outputs.vercel_url }}"
             Start-Sleep -Seconds 5
           prompt: |
             /run testdriver/test.yml
