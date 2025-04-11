@@ -44,5 +44,6 @@ steps:
         action: click
       - command: scroll
         direction: down
+        method: keyboard
       - command: assert
         expect: the recipe and the image is displayed with the correct information
