@@ -11,7 +11,7 @@ steps:
         description: recipe title field
         action: click
       - command: type
-        text: ${TD_PIZZA}
+        text: Pizza
   - prompt: enter the details for ingridents and instructions in raw text format and
     commands:
       - command: hover-text
