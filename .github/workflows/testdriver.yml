@@ -40,7 +40,9 @@ jobs:
         with:
           key: ${{ secrets.TESTDRIVER_API_KEY }}
           prerun: |
-            Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--start-maximized", "${{ needs.deploy.outputs.vercel_url }}"
+            cd $env:TEMP
+            npm install dashcam-chrome
+            Start-Process "C:/Program Files/Google/Chrome/Application/chrome.exe" -ArgumentList "--start-maximized", "--load-extension=$(pwd)/node_modules/dashcam-chrome/build", "${{ needs.deploy.outputs.vercel_url }}"
             Start-Sleep -Seconds 5
           prompt: |
             1. /run testdriver/test.yml
